@@ -107,7 +107,7 @@ class RssSkill(MycroftSkill):
             words = get_interesting_words(title)
             item_rating_list.append((calc_rating(words, utterance), i))
         best_match = sorted(item_rating_list)[-1]
-        print best_match[0], best_match[1]['title']
+        logger.debug("Reading " + best_match[1]['title'])
         if best_match[0] != 0:
             self.speak(clean_html(best_match[1]['summary']))
 
