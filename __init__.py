@@ -63,6 +63,7 @@ class RssSkill(MycroftSkill):
         super(RssSkill, self).__init__('RssSkill')
         self.feeds = {}
         self.cached_items = {}
+        self.cache_time = {}
 
     def initialize(self):
         urls = []
@@ -82,6 +83,7 @@ class RssSkill(MycroftSkill):
                 title = feed['channel']['title']
                 items = feed.get('items', [])
                 self.cached_items[title] = items
+                self.cache_time[title] = time.time()
 
             title = replace_specials(title)
             self.feeds[title] = url
@@ -104,10 +106,12 @@ class RssSkill(MycroftSkill):
         title = message.data['TitleKeyword']
         feed = feedparser.parse(self.feeds[title])
         items = feed.get('items', [])
-        self.cached_items[title] = items
 
         if len(items) > 3:
             items = items[:3]
+        self.cached_items[title] = items
+        self.cache_time[title] = time.time()
+
         self.speak('Here\'s the latest headlines from ' + message.data['TitleKeyword'])
         for i in items:
             logger.info('Headline: ' + i['title'])
@@ -117,12 +121,19 @@ class RssSkill(MycroftSkill):
     def get_items(self, name):
         """Get items from the named feed, if cache exists use cache otherwise
            fetch the feed and update."""
-        if name in self.cached_items:
+        cache_timeout = self.config.get('cache_timeout', 10) * 60
+        cached_time = float(self.cache_time.get(name, 0))
+
+        if name in self.cached_items \
+                and (time.time() - cached_time) < cache_timeout:
             logger.debug('Using cached feed...')
             return self.cached_items[name]
         else:
+            logger.debug('Fetching feed and updating cache')
             feed = feedparser.parse(self.feeds[name])
             feed_items = feed.get('items', [])
+            self.cached_items[name] = feed_items
+            self.cache_time[name] = time.time()
             if len(feed_items) > 5:
                 return feed_items[:5]
             else:
