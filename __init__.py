@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import sys
 from os.path import dirname, abspath, basename
 import subprocess
@@ -15,8 +17,15 @@ from mycroft.util.log import getLogger
 
 from nltk import pos_tag
 import re
+import unicodedata
 
+try:
+    # Python 2.6-2.7
+    from HTMLParser import HTMLParser
+except ImportError:
+    from html.parser import HTMLParser
 
+html_parser = HTMLParser()
 sys.path.append(abspath(dirname(__file__)))
 
 logger = getLogger(abspath(__file__).split('/')[-2])
@@ -51,7 +60,8 @@ def clean_html(raw_html):
     """ Remove html tags from string. """
     cleanr = re.compile('<.*?>')
     cleantext = re.sub(cleanr, '', raw_html)
-    return cleantext
+    cleantext = html_parser.unescape(cleantext)
+    return unicodedata.normalize('NFKD', cleantext).encode('ascii', 'ignore')
 
 
 def get_best_matching_title(items, utterance):
