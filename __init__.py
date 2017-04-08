@@ -15,7 +15,7 @@ import os
 from os.path import dirname
 from mycroft.util.log import getLogger
 
-from nltk import pos_tag
+from nltk import pos_tag, download
 import re
 import unicodedata
 
@@ -80,6 +80,11 @@ class RssSkill(MycroftSkill):
         self.feeds = {}
         self.cached_items = {}
         self.cache_time = {}
+        try:
+            pos_tag('advance')
+        except LookupError:
+            logger.debug('Tagger not installed... Trying to download')
+            download('averaged_perceptron_tagger')
 
     def cache(self, title, items):
         """ Add items to cache and set a timestamp for the cache."""

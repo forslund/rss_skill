@@ -5,7 +5,7 @@ An overly complicated mycroft skill for fetching and reading RSS feeds. The skil
 
 ## Installation
 
-After cloning the skill the script `install_nltk.sh` needs to be run to install and download data files for natural language toolkit.
+Simply clone the skill and run `pip install -r requirements.txt` from the skill directory or use msm.
 
 ## Usage
 
