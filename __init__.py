@@ -125,6 +125,13 @@ class RssSkill(MycroftSkill):
             .require('ReadKeyword')\
             .build()
         self.register_intent(intent, self.handle_read)
+
+        intent = IntentBuilder('readLatestIntent')\
+            .require('ReadKeyword')\
+            .require('LatestKeyword')\
+            .require('TitleKeyword')\
+            .build()
+        self.register_intent(intent, self.handle_read_latest)
         logger.debug('Intialization done')
 
     def handle_headlines(self, message):
@@ -182,6 +189,11 @@ class RssSkill(MycroftSkill):
         if best_match[0] != 0:
             self.speak(clean_html(best_match[1]['summary']))
 
+    def handle_read_latest(self, message):
+        title = message.data['TitleKeyword']
+        latest = self.get_items(title)[0]
+        text = latest.get('description') or latest.get('summary')
+        self.speak(clean_html(text))
 
 def create_skill():
     return RssSkill()
