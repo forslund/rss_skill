@@ -15,7 +15,8 @@ import os
 from os.path import dirname
 from mycroft.util.log import getLogger
 
-from nltk import pos_tag, download
+from nltk import pos_tag
+from nltk.downloader import Downloader
 import re
 import unicodedata
 
@@ -74,6 +75,9 @@ def get_best_matching_title(items, utterance):
     return sorted(item_rating_list)[-1]
 
 
+ALT_NLTK_DATA = 'https://pastebin.com/raw/D3TBY4Mj'
+
+
 class RssSkill(MycroftSkill):
     def __init__(self):
         super(RssSkill, self).__init__('RssSkill')
@@ -84,7 +88,13 @@ class RssSkill(MycroftSkill):
             pos_tag('advance')
         except LookupError:
             logger.debug('Tagger not installed... Trying to download')
-            download('averaged_perceptron_tagger')
+            dler = Downloader()
+            if not dler.download('averaged_perceptron_tagger'):
+                logger.debug('Trying alternative source...')
+                dler = Downloader(ALT_NLTK_DATA)
+                dler.download('averaged_perceptron_tagger',
+                         raise_on_error=True)
+
 
     def cache(self, title, items):
         """ Add items to cache and set a timestamp for the cache."""
