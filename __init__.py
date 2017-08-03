@@ -81,6 +81,7 @@ ALT_NLTK_DATA = 'https://pastebin.com/raw/D3TBY4Mj'
 class RssSkill(MycroftSkill):
     def __init__(self):
         super(RssSkill, self).__init__('RssSkill')
+        self._is_reading_headlines = False
         self.feeds = {}
         self.cached_items = {}
         self.cache_time = {}
@@ -150,16 +151,21 @@ class RssSkill(MycroftSkill):
         feed = feedparser.parse(self.feeds[title])
         items = feed.get('items', [])
 
+        # Only read three items
         if len(items) > 3:
             items = items[:3]
         self.cache(title, items)
 
+        self._is_reading_headlines = True
         self.speak('Here\'s the latest headlines from ' +
                    message.data['TitleKeyword'])
         for i in items:
+            if not self._is_reading_headlines:
+                break
             logger.info('Headline: ' + i['title'])
             self.speak(i['title'])
             time.sleep(5)
+        self._is_reading_headlines = False
 
     def get_items(self, name):
         """
@@ -204,6 +210,10 @@ class RssSkill(MycroftSkill):
         latest = self.get_items(title)[0]
         text = latest.get('description') or latest.get('summary')
         self.speak(clean_html(text))
+
+    def stop(self):
+        self._is_reading_headlines = False
+
 
 def create_skill():
     return RssSkill()
