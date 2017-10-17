@@ -1,0 +1,93 @@
+{
+    "identifier": "rss-skill-x7",
+    "name": "Feed reader",
+    "skillMetadata": {
+        "sections": [
+            {
+                "name": "Feed 1",
+                "fields": [
+                    {
+                        "name": "url0",
+                        "type": "text",
+                        "label": "Feed 1 url:",
+                        "value": ""
+                    },
+                    {
+                        "name": "alias0",
+                        "type": "text",
+                        "label": "Alias for feed 1(Optional)",
+                        "value": ""
+                    }
+                ]
+            },
+            {
+                "name": "Feed 2",
+                "fields": [
+                    {
+                        "name": "url1",
+                        "type": "text",
+                        "label": "Feed 2 url",
+                        "value": ""
+                    },
+                    {
+                        "name": "alias1",
+                        "type": "text",
+                        "label": "Alias for feed 2(Optional)",
+                        "value": ""
+                    }
+                ]
+            },
+            {
+                "name": "Feed 3",
+                "fields": [
+                    {
+                        "name": "url2",
+                        "type": "text",
+                        "label": "Feed 3 url",
+                        "value": ""
+                    },
+                    {
+                        "name": "alias2",
+                        "type": "text",
+                        "label": "Alias for feed 3 (Optional)",
+                        "value": ""
+                    }
+                ]
+            },
+            {
+                "name": "Feed 4",
+                "fields": [
+                    {
+                        "name": "url3",
+                        "type": "text",
+                        "label": "Feed 4 url",
+                        "value": ""
+                    },
+                    {
+                        "name": "alias3",
+                        "type": "text",
+                        "label": "Alias for feed 4(Optional)",
+                        "value": ""
+                    }
+                ]
+            },
+            {
+                "name": "Feed 5",
+                "fields": [
+                    {
+                        "name": "url4",
+                        "type": "text",
+                        "label": "Feed 5 url",
+                        "value": ""
+                    },
+                    {
+                        "name": "alias4",
+                        "type": "text",
+                        "label": "Alias for feed 5 (Optional)",
+                        "value": ""
+                    }
+                ]
+            }
+        ]
+    }
+}

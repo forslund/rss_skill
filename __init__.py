@@ -103,28 +103,26 @@ class RssSkill(MycroftSkill):
         self.cache_time[title] = time.time()
 
     def initialize(self):
-        urls = []
-        if self.config:
-            urls = self.config.get('feeds', [])
-        else:
-            logger.warning("No config for " + self.name + "exists")
-        if len(urls) == 0:
-            logger.warning('No feeds loaded')
-
-        for url in urls:
-            if type(url) == list:
-                title = url[0]
-                url = url[1]
-            else:
+        print self.settings.keys()
+        for i in range(5):
+            url_key = "url{}".format(i)
+            alias_key = "alias{}".format(i)
+            url = self.settings.get(url_key)
+            alias = self.settings.get(alias_key)
+            print "loading from settings"
+            print url_key, alias_key
+            print alias, url
+            if url:
                 feed = feedparser.parse(url)
-                title = feed['channel']['title']
+                title = alias or feed['channel']['title']
                 items = feed.get('items', [])
                 self.cache(title, items)
 
-            title = replace_specials(title)
-            self.feeds[title] = url
-            logger.info(title)
-            self.register_vocabulary(title, 'TitleKeyword')
+                title = replace_specials(title)
+                print 'Loaded {}'.format(title)
+                self.feeds[title] = url
+                logger.info(title)
+                self.register_vocabulary(title, 'TitleKeyword')
 
         intent = IntentBuilder('rssIntent')\
             .require('RssKeyword')\
@@ -172,7 +170,7 @@ class RssSkill(MycroftSkill):
             Get items from the named feed, if cache exists use cache otherwise
             fetch the feed and update.
         """
-        cache_timeout = self.config.get('cache_timeout', 10) * 60
+        cache_timeout = 10 * 60
         cached_time = float(self.cache_time.get(name, 0))
 
         if name in self.cached_items \
